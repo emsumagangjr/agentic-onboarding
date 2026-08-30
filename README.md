@@ -1,11 +1,11 @@
-# MyAgents
+# agentic-onboarding
 
 Central repository of AI agent onboarding guides and templates for Yng's projects. Any agent (Claude Code, or otherwise) starting work on a project should read the relevant guide here first.
 
 ## Structure
 
 ```
-MyAgents/
+agentic-onboarding/
 ├── Django Project/          ← agentic guide and files for Django-related projects
 │   ├── agents.md             ← global onboarding guide (agent-agnostic)
 │   ├── CHANGELOG.md          ← history of changes to the guide
