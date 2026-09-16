@@ -24,6 +24,18 @@ You are working with a **Solutions Architect** who:
 
 ---
 
+## Recommended Repository Framework
+
+For projects involving multiple concurrent AI agents (e.g., an Epic with several independently implementable tasks), use the **Bare Repository + Git Worktrees Pattern**:
+
+> **One Epic → one Epic branch → multiple task branches → multiple worktrees → multiple agents**
+
+This gives each agent an isolated worktree and branch, keeps `main` protected from direct feature changes, and enforces a controlled promotion path: **Agent → Task Branch → Epic Branch → Main**.
+
+See [bare-repository-git-worktrees-agentic-development.md](bare-repository-git-worktrees-agentic-development.md) for full setup steps, branching rules, and agent safety guidelines.
+
+---
+
 ## Next
 
 Read [context.md](context.md) for the project-specific context this guide applies to.

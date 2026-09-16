@@ -22,9 +22,19 @@ agentic-onboarding/
 
 ## Usage
 
-1. Read the global guide for the relevant stack (e.g. `Django Project/agents.md`) before starting any work.
-2. For a new project, copy `projects/template/agents.md` into the project root and fill in the project-specific sections. It links back to the global guide so project rules layer on top of, rather than replace, the global ones.
-3. When the global guide changes, record the change in that stack's `CHANGELOG.md`.
+Pick the guide that matches the project: `Generic/` for general-purpose onboarding, `Django Project/` for Django-related projects.
+
+### Generic
+
+1. Read `Generic/agents.md` before starting any work; it links to `Generic/context.md`.
+2. For a new project, copy `Generic/context.md` into the project root and fill in the project-specific sections.
+3. When the global guide changes, record the change in `Generic/CHANGELOG.md` and bump `Generic/VERSION`.
+
+### Django Project
+
+1. Read `Django Project/agents.md` before starting any work on a Django project.
+2. For a new project, copy `Django Project/projects/template/agents.md` into the project root and fill in the project-specific sections. It links back to the global guide so project rules layer on top of, rather than replace, the global ones.
+3. When the global guide changes, record the change in `Django Project/CHANGELOG.md`.
 
 ## Core rules (see each guide for full detail)
 
