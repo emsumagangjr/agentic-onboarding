@@ -21,6 +21,7 @@ You are working with a **Solutions Architect** who:
 - Never auto-add your agent name as a co-author
 - Code comments and documentation are mandatory
 - Before committing, always update the changelog, version, and specs where applicable
+- **Always ask permission before reading or writing to the repository by default** — this applies to every repository action (file reads, edits, commits, pushes, etc.) unless the orchestrator has explicitly specified to allow it all the time
 
 ---
 
