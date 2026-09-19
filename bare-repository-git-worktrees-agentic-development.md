@@ -50,8 +50,15 @@ centralized while active branches receive separate working directories:
 myproject/
 │
 ├── .bare/                       # shared Git repository
+├── .shared/                     # local, untracked files shared by default
+│   ├── .env
+│   ├── secrets/
+│   └── config/
 │
 ├── main/                        # protected main worktree
+│   ├── .env -> ../.shared/.env
+│   ├── secrets -> ../.shared/secrets
+│   └── config -> ../.shared/config
 │
 ├── epic-auth/                   # Epic integration worktree
 │
@@ -76,6 +83,9 @@ main
 
 The `.bare/` repository owns the shared Git history, objects, refs,
 configuration, and worktree metadata.
+
+The root `.shared/` directory holds local files that worktrees follow by
+default. A worktree can replace an individual link with its own copy.
 
 ------------------------------------------------------------------------
 
@@ -246,12 +256,35 @@ Assume the remote repository is:
 git@github.com:username/myproject.git
 ```
 
-Create the project directory:
+Create the project directory and its shared local-files folder:
 
 ``` bash
 mkdir myproject
 cd myproject
+mkdir -p .shared/secrets .shared/config
 ```
+
+Create `.shared/` once, at the project root beside `.bare/`. It is a
+local folder outside all worktrees, so Git does not include it in any
+branch. Put the private files that worktrees should follow by default
+there.
+
+Populate it from an existing checkout or your project's approved local
+configuration source. For example, if the old checkout is beside
+`myproject/`:
+
+``` bash
+cp ../myproject-old/.env .shared/.env
+cp -R ../myproject-old/secrets/. .shared/secrets/
+cp -R ../myproject-old/config/. .shared/config/
+```
+
+Run only the copy commands for paths your project actually has. For a
+new project, create `.shared/.env` from its provided example file and
+enter the local values; populate `secrets/` and `config/` in the same
+way if needed. Do not put real credentials in a tracked example file.
+Populate each item before linking it into worktrees. Later edits to a
+shared item appear in every worktree that still follows its link.
 
 Clone the remote as a bare repository:
 
@@ -268,12 +301,20 @@ git --git-dir=.bare config remote.origin.fetch \
 git --git-dir=.bare fetch origin
 ```
 
-The initial structure is:
+The initial structure, before creating any worktrees, is:
 
 ``` text
 myproject/
-└── .bare/
+├── .bare/
+└── .shared/
+    ├── .env                     # add your local values
+    ├── secrets/
+    └── config/
 ```
+
+Keep `.shared/` outside every worktree and out of version control. Give
+it access permissions appropriate for the secrets it contains; do not
+commit or push those files.
 
 ------------------------------------------------------------------------
 
@@ -290,6 +331,7 @@ Result:
 ``` text
 myproject/
 ├── .bare/
+├── .shared/
 └── main/
 ```
 
@@ -604,7 +646,7 @@ automatically isolate runtime resources.
 
 Each active agent may need independent:
 
--   `.env`;
+-   `.env` values when its branch opts out of the shared defaults;
 -   Python virtual environment;
 -   database or database schema;
 -   development server port;
@@ -628,6 +670,66 @@ several agents create migrations concurrently.
 
 For Docker Compose, assign a unique project name per worktree so
 containers, networks, and volumes do not collide.
+
+### Shared private files with a per-worktree opt out
+
+The project root's `.shared/` folder is the default source for local
+`.env`, `secrets/`, and `config/`. Link each item into a new worktree
+after `git worktree add`. For example, from `myproject/`:
+
+``` bash
+# Run for each new worktree; replace main with its directory name.
+for name in .env secrets config; do
+    if [ -e ".shared/$name" ] && [ ! -e "main/$name" ] &&
+       [ ! -L "main/$name" ]; then
+        ln -s "../.shared/$name" "main/$name"
+    fi
+done
+```
+
+Repeat for `epic-auth` and each task worktree, or put this loop in the
+worktree creation script. Existing files are left alone. If a tracked
+file already occupies one of these paths, keep it tracked and choose a
+different local path for the shared data.
+
+By default, every linked worktree reads the same underlying files. A
+change through one link is visible in all linked worktrees. To opt a
+branch out for one item, replace that worktree's link with a local copy:
+
+``` bash
+# From myproject/: give the OAuth task its own .env.
+test -L agent-auth-oauth/.env
+cp -L agent-auth-oauth/.env agent-auth-oauth/.env.local-copy
+unlink agent-auth-oauth/.env
+mv agent-auth-oauth/.env.local-copy agent-auth-oauth/.env
+```
+
+The OAuth task now has independent `.env` values; its `secrets/` and
+`config/` links still follow `.shared/`. The same approach works for a
+directory: copy its contents into a temporary directory in that
+worktree, unlink the directory link, then rename the temporary directory
+to the original name. To opt out when creating a worktree, simply omit
+the selected link and create a local file or directory at that path.
+Only unlink a path after confirming it is a symbolic link; deleting or
+editing the shared target affects every branch that follows it.
+
+Ensure the relevant paths are ignored in every branch's `.gitignore`
+or a local Git excludes file. Directory patterns with a trailing slash
+do not ignore symbolic links, so use patterns that match both the link
+and an independent directory:
+
+``` gitignore
+/.env
+/secrets
+/config
+```
+
+Add only entries that are genuinely private and untracked in the
+project. For example, do not ignore a tracked application `config/`
+directory; share a specific local file within it instead. Verify with
+`git status --short` that neither the links nor local copies appear as
+untracked files before committing. Each worktree keeps its own
+dependencies, build outputs, and runtime resources.
 
 ------------------------------------------------------------------------
 

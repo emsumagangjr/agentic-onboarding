@@ -4,6 +4,13 @@ All notable changes to this project will be documented here.
 
 ---
 
+## [0.3.1] — 2026-09-19
+
+### Changed
+- Documented creation and population of a root `.shared/` folder for Git worktrees, with shared private files by default and a per-worktree opt out.
+
+---
+
 ## [0.3.0] — 2026-09-19
 
 ### Changed
@@ -28,4 +35,3 @@ All notable changes to this project will be documented here.
 
 ### Removed
 - `Generic/` folder (contents moved to root, see above).
-
