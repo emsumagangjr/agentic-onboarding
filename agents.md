@@ -40,7 +40,7 @@ See [bare-repository-git-worktrees-agentic-development.md](bare-repository-git-w
 
 ## Viewing Files
 
-Use [yngview.ps1](yngview.ps1) (Windows) or [yngview.sh](yngview.sh) (macOS/Linux) to view files from the CLI instead of dumping raw text. It detects the file extension and renders accordingly — markdown opens rendered in the browser by default (falling back to a styled console view), and any unrecognized file type is shown as plain text. See the script's own help (`Get-Help ./yngview.ps1 -Full`, or `yngview.sh -h`) for requirements, install steps, and usage.
+Use the `yngv` command to view files from the CLI instead of dumping raw text: [yngv.ps1](yngv.ps1) on Windows, [yngv.sh](yngv.sh) on macOS/Linux (e.g. `yngv notes.md`). It detects the file extension and renders accordingly — markdown opens rendered in the browser by default (falling back to a styled console view), and any unrecognized file type is shown as plain text. See the script's own help (`Get-Help ./yngv.ps1 -Full`, or `yngv.sh -h`) for requirements, install steps, and usage.
 
 ---
 

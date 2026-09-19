@@ -1,14 +1,14 @@
 #!/usr/bin/env bash
 #
-# yngview - view a file in the terminal, rendered according to its type.
+# yngv - view a file in the terminal, rendered according to its type.
 #
-#   Name:     yngview.sh
-#   Version:  1.0.0
+#   Name:     yngv.sh
+#   Version:  1.1.0
 #   Created:  2026-09-19
 #   Author:   Emeterio M. Sumagang Jr.
 #   Company:  yngsoftware (www.yngsoftware.com)
 #
-# macOS / Linux counterpart of yngview.ps1.
+# macOS / Linux counterpart of yngv.ps1.
 #
 # DESCRIPTION
 #   Detects the file extension and renders it accordingly. Markdown (.md,
@@ -27,18 +27,18 @@
 # INSTALL
 #   1. Copy this file to a folder on your PATH, dropping the extension so the
 #      bare command works, and make it executable:
-#          cp yngview.sh ~/.local/bin/yngview
-#          chmod +x ~/.local/bin/yngview
+#          cp yngv.sh ~/.local/bin/yngv
+#          chmod +x ~/.local/bin/yngv
 #   2. Make sure that folder is on your PATH (add to ~/.zshrc or ~/.bashrc):
 #          export PATH="$HOME/.local/bin:$PATH"
 #      Open a new terminal afterwards.
 #
 # RUN
-#   yngview <file>            renders based on the file extension
-#   yngview notes.md          markdown -> opens in the browser
-#   yngview notes.md -c       markdown -> ANSI-styled in this terminal
-#   yngview notes.md -r       any file -> plain text
-#   yngview -h                show this help
+#   yngv <file>            renders based on the file extension
+#   yngv notes.md          markdown -> opens in the browser
+#   yngv notes.md -c       markdown -> ANSI-styled in this terminal
+#   yngv notes.md -r       any file -> plain text
+#   yngv -h                show this help
 #
 # EXTENDING
 #   Add a case to the 'case "$ext"' block at the bottom of this script that
@@ -60,10 +60,10 @@ while [ $# -gt 0 ]; do
         -r|--raw)     RAW=1 ;;
         -c|--console) CONSOLE=1 ;;
         -h|--help)    usage; exit 0 ;;
-        -*)           echo "yngview: unknown option: $1" >&2; usage >&2; exit 2 ;;
+        -*)           echo "yngv: unknown option: $1" >&2; usage >&2; exit 2 ;;
         *)
             if [ -n "$FILE" ]; then
-                echo "yngview: only one file at a time" >&2; exit 2
+                echo "yngv: only one file at a time" >&2; exit 2
             fi
             FILE="$1"
             ;;
@@ -72,13 +72,13 @@ while [ $# -gt 0 ]; do
 done
 
 if [ -z "$FILE" ]; then
-    echo "yngview: no file given" >&2
+    echo "yngv: no file given" >&2
     usage >&2
     exit 2
 fi
 
 if [ ! -f "$FILE" ]; then
-    echo "yngview: file not found: $FILE" >&2
+    echo "yngv: file not found: $FILE" >&2
     exit 1
 fi
 
@@ -119,7 +119,7 @@ show_markdown_browser() {
     fi
     if command -v pandoc >/dev/null 2>&1; then
         local tmp
-        tmp=$(mktemp "${TMPDIR:-/tmp}/yngview.XXXXXX") || return 1
+        tmp=$(mktemp "${TMPDIR:-/tmp}/yngv.XXXXXX") || return 1
         mv "$tmp" "$tmp.html"; tmp="$tmp.html"
         pandoc -f gfm -t html5 -s --metadata "title=$(basename "$file")" -o "$tmp" "$file" || return 1
         open_default "$tmp" || return 1

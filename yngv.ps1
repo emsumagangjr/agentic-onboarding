@@ -17,14 +17,14 @@
     Force the ANSI-styled in-console renderer for markdown instead of opening it
     in the browser.
 .EXAMPLE
-    yngview README.md
+    yngv README.md
 .EXAMPLE
-    yngview notes.md -Raw
+    yngv notes.md -Raw
 .EXAMPLE
-    yngview notes.md -Console
+    yngv notes.md -Console
 .NOTES
-    Name:         yngview
-    Version:      1.0.0
+    Name:         yngv
+    Version:      1.1.0
     Created:      2026-09-19
     Author:       Emeterio M. Sumagang Jr.
     Company:      yngsoftware (www.yngsoftware.com)
@@ -38,14 +38,14 @@
       console renderer.
 
     INSTALL
-    1. Save this file as yngview.ps1 in a folder that is on your PATH,
-       e.g. C:\Users\<you>\.local\bin\yngview.ps1
-    2. (Recommended) Add a yngview.cmd shim next to it in the same folder,
-       so the bare command "yngview" resolves from cmd.exe, PowerShell and
+    1. Save this file as yngv.ps1 in a folder that is on your PATH,
+       e.g. C:\Users\<you>\.local\bin\yngv.ps1
+    2. (Recommended) Add a yngv.cmd shim next to it in the same folder,
+       so the bare command "yngv" resolves from cmd.exe, PowerShell and
        bash alike, not just PowerShell's own script resolution:
 
            @echo off
-           powershell.exe -NoProfile -ExecutionPolicy Bypass -File "%~dp0yngview.ps1" %*
+           powershell.exe -NoProfile -ExecutionPolicy Bypass -File "%~dp0yngv.ps1" %*
 
     3. Make sure that folder is on your PATH:
            [Environment]::SetEnvironmentVariable(
@@ -56,11 +56,11 @@
        Open a new terminal afterwards so it picks up the updated PATH.
 
     RUN
-        yngview <path-to-file>              # renders based on extension
-        yngview notes.md                    # markdown -> opens in browser
-        yngview notes.md -Console           # markdown -> ANSI in this console
-        yngview notes.md -Raw               # any file -> plain text
-        yngview file.unknownext             # unrecognized type -> plain text (the default)
+        yngv <path-to-file>              # renders based on extension
+        yngv notes.md                    # markdown -> opens in browser
+        yngv notes.md -Console           # markdown -> ANSI in this console
+        yngv notes.md -Raw               # any file -> plain text
+        yngv file.unknownext             # unrecognized type -> plain text (the default)
 
     EXTENDING
     To support another file type, add a case to the switch statement at

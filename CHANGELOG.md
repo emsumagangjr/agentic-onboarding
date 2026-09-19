@@ -4,6 +4,13 @@ All notable changes to this project will be documented here.
 
 ---
 
+## [0.6.0] — 2026-09-19
+
+### Changed
+- Renamed `yngview.ps1` / `yngview.sh` to `yngv.ps1` / `yngv.sh`; the command is now `yngv`. Script version bumped to 1.1.0. Updated `agents.md` and `README.md`.
+
+---
+
 ## [0.5.0] — 2026-09-19
 
 ### Added
