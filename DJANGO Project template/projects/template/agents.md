@@ -2,7 +2,7 @@
 
 > Project-specific context for agents working on this project.
 > Read the default guide first: [f:\MyAgents\agents.md](../../../agents.md)
-> Then the Django-specific extension: [f:\MyAgents\Django Project\agents.md](../../agents.md)
+> Then the Django-specific extension: [f:\MyAgents\DJANGO Project template\agents.md](../../agents.md)
 
 ---
 

@@ -1,4 +1,4 @@
-# Django Project — Agent Guide
+# DJANGO Project template — Agent Guide
 
 > Extends the default guide. Read [f:\MyAgents\agents.md](../agents.md) first — everything there applies here unless overridden below.
 

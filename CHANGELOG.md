@@ -4,6 +4,14 @@ All notable changes to this project will be documented here.
 
 ---
 
+## [0.3.0] — 2026-09-19
+
+### Changed
+- Renamed `Django Project/` to `DJANGO Project template/` for a more descriptive name; updated references in `README.md`.
+- `README.md` — structure tree now lists `yngview.ps1`.
+
+---
+
 ## [0.2.0] — 2026-09-19
 
 ### Added
