@@ -23,8 +23,11 @@
 .EXAMPLE
     yngview notes.md -Console
 .NOTES
-    Name:        yngview
-    Developed by: yngsoftware
+    Name:         yngview
+    Version:      1.0.0
+    Created:      2026-09-19
+    Author:       Emeterio M. Sumagang Jr.
+    Company:      yngsoftware (www.yngsoftware.com)
 
     REQUIREMENTS
     - Windows PowerShell 5.1 or later (works standalone; falls back to the

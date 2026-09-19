@@ -4,6 +4,23 @@ All notable changes to this project will be documented here.
 
 ---
 
+## [0.4.1] — 2026-09-19
+
+### Changed
+- `yngview.ps1`, `yngshared.ps1` — header credit is now "Author: Emeterio M. Sumagang Jr." and "Company: yngsoftware (www.yngsoftware.com)", and each script records its own version (1.0.0) and creation date.
+
+---
+
+## [0.4.0] — 2026-09-19
+
+### Added
+- `yngshared.ps1` — manages the root `.shared/` folder for worktrees (`-link`, `-copy`, `-unlink`); help made project-neutral with requirements, install and run instructions.
+- `agents.md` — new "Shared Private Files (Worktrees)" section.
+- `bare-repository-git-worktrees-agentic-development.md` — documents `yngshared.ps1` in the shared-files section, keeping the manual loop for non-Windows.
+- `README.md` — structure tree lists `yngshared.ps1`.
+
+---
+
 ## [0.3.2] — 2026-09-19
 
 ### Changed

@@ -44,6 +44,19 @@ Use [yngview.ps1](yngview.ps1) to view files from the CLI instead of dumping raw
 
 ---
 
+## Shared Private Files (Worktrees)
+
+In a bare-repository + worktrees project, private untracked files (`.env`, `secrets/`, `config/`, …) live once in a root `.shared/` folder and are linked into each worktree — never committed, never copied by hand. On Windows, use [yngshared.ps1](yngshared.ps1), placed in the project root beside `.bare/` and `.shared/`:
+
+- `-link <worktree>…` or `-link -All` — symlink shared items into worktrees
+- `-copy <worktree> -Name <item>` — give a worktree its own independent copy (opt out of sharing)
+- `-unlink <worktree>` — turn links back into real copies
+- Always preview with `-WhatIf` first; without `-Force` it never overwrites a real file, and `-Force` backs up whatever it replaces
+
+Never edit or delete `.shared/` items casually — a change there affects every worktree that follows the link. See the script's help (`Get-Help .\yngshared.ps1 -Full`) and [bare-repository-git-worktrees-agentic-development.md](bare-repository-git-worktrees-agentic-development.md) for details.
+
+---
+
 ## Next
 
 Read [context.md](context.md) for the project-specific context this guide applies to.

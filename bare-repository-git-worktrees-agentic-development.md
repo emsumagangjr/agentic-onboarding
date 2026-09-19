@@ -675,7 +675,28 @@ containers, networks, and volumes do not collide.
 
 The project root's `.shared/` folder is the default source for local
 `.env`, `secrets/`, and `config/`. Link each item into a new worktree
-after `git worktree add`. For example, from `myproject/`:
+after `git worktree add`.
+
+**On Windows, use `yngshared.ps1`.** Copy [yngshared.ps1](yngshared.ps1)
+into the project root beside `.bare/` and `.shared/`, then run it from
+there. It handles every item in `.shared/` (not just the three above),
+never overwrites real files without `-Force`, and backs up anything it
+replaces:
+
+``` powershell
+.\yngshared.ps1 -link main epic-auth -WhatIf   # preview
+.\yngshared.ps1 -link main epic-auth           # symlink shared items
+.\yngshared.ps1 -link -All                     # every worktree
+.\yngshared.ps1 -copy agent-auth-oauth -Name .env   # opt out: own .env
+.\yngshared.ps1 -unlink agent-auth-oauth       # links -> independent copies
+```
+
+Symlinks on Windows need Developer Mode or an elevated shell. Run
+`Get-Help .\yngshared.ps1 -Full` for requirements, all switches, and the
+exact behavior for each existing-file case.
+
+On macOS/Linux, or to see what the script does, the equivalent manual
+loop from `myproject/` is:
 
 ``` bash
 # Run for each new worktree; replace main with its directory name.
@@ -694,7 +715,8 @@ different local path for the shared data.
 
 By default, every linked worktree reads the same underlying files. A
 change through one link is visible in all linked worktrees. To opt a
-branch out for one item, replace that worktree's link with a local copy:
+branch out for one item, use `yngshared.ps1 -copy <worktree> -Name <item>`
+on Windows, or replace that worktree's link with a local copy manually:
 
 ``` bash
 # From myproject/: give the OAuth task its own .env.
