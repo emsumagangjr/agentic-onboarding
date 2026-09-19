@@ -4,6 +4,16 @@ All notable changes to this project will be documented here.
 
 ---
 
+## [0.5.0] — 2026-09-19
+
+### Added
+- `yngview.sh` — macOS/Linux version of `yngview.ps1` (markdown in the browser via pwsh or pandoc, ANSI console fallback, plain text for unknown types).
+- `yngshared.sh` — macOS/Linux version of `yngshared.ps1` (`--link`, `--copy`, `--unlink`, `--all`, `--name`, `--force`, `--what-if`), same behavior table and backup rules.
+- `.gitattributes` — keeps `*.sh` files LF so shebangs work on macOS/Linux.
+- `agents.md`, `bare-repository-git-worktrees-agentic-development.md`, `README.md` — reference the `.sh` scripts alongside the `.ps1` ones.
+
+---
+
 ## [0.4.1] — 2026-09-19
 
 ### Changed

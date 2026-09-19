@@ -14,7 +14,9 @@ agentic-onboarding/
 ├── CHANGELOG.md               ← history of changes to the default guide
 ├── VERSION                    ← current version number, kept in sync with CHANGELOG.md
 ├── yngview.ps1                ← CLI file viewer (markdown in browser, plain text otherwise)
+├── yngview.sh                 ← macOS/Linux version of yngview.ps1
 ├── yngshared.ps1              ← links/copies shared private files (.shared\) into git worktrees
+├── yngshared.sh               ← macOS/Linux version of yngshared.ps1
 └── DJANGO Project template/   ← stack-specific extension, used for Django projects
     ├── agents.md               ← Django-specific guide, extends the default agents.md
     ├── CHANGELOG.md            ← history of changes to the Django-specific guide

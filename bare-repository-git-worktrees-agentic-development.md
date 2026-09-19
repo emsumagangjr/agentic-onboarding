@@ -695,7 +695,19 @@ Symlinks on Windows need Developer Mode or an elevated shell. Run
 `Get-Help .\yngshared.ps1 -Full` for requirements, all switches, and the
 exact behavior for each existing-file case.
 
-On macOS/Linux, or to see what the script does, the equivalent manual
+**On macOS/Linux, use `yngshared.sh`.** Copy [yngshared.sh](yngshared.sh)
+into the project root, `chmod +x yngshared.sh`, and use the same actions
+with double-dash options (`./yngshared.sh -h` for full help):
+
+``` bash
+./yngshared.sh --link main epic-auth --what-if   # preview
+./yngshared.sh --link main epic-auth             # symlink shared items
+./yngshared.sh --link --all                      # every worktree
+./yngshared.sh --copy agent-auth-oauth --name .env   # opt out: own .env
+./yngshared.sh --unlink agent-auth-oauth         # links -> independent copies
+```
+
+To see what the script does, or without it, the equivalent manual
 loop from `myproject/` is:
 
 ``` bash
@@ -716,7 +728,8 @@ different local path for the shared data.
 By default, every linked worktree reads the same underlying files. A
 change through one link is visible in all linked worktrees. To opt a
 branch out for one item, use `yngshared.ps1 -copy <worktree> -Name <item>`
-on Windows, or replace that worktree's link with a local copy manually:
+(Windows) or `./yngshared.sh --copy <worktree> --name <item>`
+(macOS/Linux), or replace that worktree's link with a local copy manually:
 
 ``` bash
 # From myproject/: give the OAuth task its own .env.

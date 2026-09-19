@@ -40,20 +40,20 @@ See [bare-repository-git-worktrees-agentic-development.md](bare-repository-git-w
 
 ## Viewing Files
 
-Use [yngview.ps1](yngview.ps1) to view files from the CLI instead of dumping raw text. It detects the file extension and renders accordingly — markdown opens rendered in the browser by default (falling back to a styled console view), and any unrecognized file type is shown as plain text. See the script's own comment-based help (`Get-Help ./yngview.ps1 -Full`) for requirements, install steps, and usage.
+Use [yngview.ps1](yngview.ps1) (Windows) or [yngview.sh](yngview.sh) (macOS/Linux) to view files from the CLI instead of dumping raw text. It detects the file extension and renders accordingly — markdown opens rendered in the browser by default (falling back to a styled console view), and any unrecognized file type is shown as plain text. See the script's own help (`Get-Help ./yngview.ps1 -Full`, or `yngview.sh -h`) for requirements, install steps, and usage.
 
 ---
 
 ## Shared Private Files (Worktrees)
 
-In a bare-repository + worktrees project, private untracked files (`.env`, `secrets/`, `config/`, …) live once in a root `.shared/` folder and are linked into each worktree — never committed, never copied by hand. On Windows, use [yngshared.ps1](yngshared.ps1), placed in the project root beside `.bare/` and `.shared/`:
+In a bare-repository + worktrees project, private untracked files (`.env`, `secrets/`, `config/`, …) live once in a root `.shared/` folder and are linked into each worktree — never committed, never copied by hand. Use [yngshared.ps1](yngshared.ps1) on Windows or [yngshared.sh](yngshared.sh) on macOS/Linux, placed in the project root beside `.bare/` and `.shared/` (the `.sh` version takes the same actions as `--link`, `--copy`, `--unlink`, `--all`, `--name`, `--force`, `--what-if`):
 
 - `-link <worktree>…` or `-link -All` — symlink shared items into worktrees
 - `-copy <worktree> -Name <item>` — give a worktree its own independent copy (opt out of sharing)
 - `-unlink <worktree>` — turn links back into real copies
-- Always preview with `-WhatIf` first; without `-Force` it never overwrites a real file, and `-Force` backs up whatever it replaces
+- Always preview with `-WhatIf` (`--what-if` in the `.sh`) first; without `-Force` it never overwrites a real file, and `-Force` backs up whatever it replaces
 
-Never edit or delete `.shared/` items casually — a change there affects every worktree that follows the link. See the script's help (`Get-Help .\yngshared.ps1 -Full`) and [bare-repository-git-worktrees-agentic-development.md](bare-repository-git-worktrees-agentic-development.md) for details.
+Never edit or delete `.shared/` items casually — a change there affects every worktree that follows the link. See the script's help (`Get-Help .\yngshared.ps1 -Full`, or `./yngshared.sh -h`) and [bare-repository-git-worktrees-agentic-development.md](bare-repository-git-worktrees-agentic-development.md) for details.
 
 ---
 
