@@ -4,6 +4,13 @@ All notable changes to this project will be documented here.
 
 ---
 
+## [0.3.2] — 2026-09-19
+
+### Changed
+- `agents.md` — General Guidelines: when grilling the orchestrator, ask one question at a time.
+
+---
+
 ## [0.3.1] — 2026-09-19
 
 ### Changed
