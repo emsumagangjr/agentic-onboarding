@@ -4,6 +4,14 @@ All notable changes to this project will be documented here.
 
 ---
 
+## [0.3.0] — 2026-09-19
+
+### Changed
+- `agents.md` — rewritten as a thin extension of the default guide (now at repo root) instead of a full duplicate; states the Django-specific overrides go here.
+- `projects/template/agents.md` — fixed the relative link to the default guide (now three levels up, since `Generic/` no longer wraps it) and added a separate link to this folder's Django-specific extension.
+
+---
+
 ## [0.2.0] — 2026-06-27
 
 ### Changed

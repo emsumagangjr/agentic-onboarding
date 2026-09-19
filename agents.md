@@ -37,6 +37,12 @@ See [bare-repository-git-worktrees-agentic-development.md](bare-repository-git-w
 
 ---
 
+## Viewing Files
+
+Use [yngview.ps1](yngview.ps1) to view files from the CLI instead of dumping raw text. It detects the file extension and renders accordingly — markdown opens rendered in the browser by default (falling back to a styled console view), and any unrecognized file type is shown as plain text. See the script's own comment-based help (`Get-Help ./yngview.ps1 -Full`) for requirements, install steps, and usage.
+
+---
+
 ## Next
 
 Read [context.md](context.md) for the project-specific context this guide applies to.

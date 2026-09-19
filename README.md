@@ -6,35 +6,36 @@ Central repository of AI agent onboarding guides and templates for Yng's project
 
 ```
 agentic-onboarding/
-├── Django Project/          ← agentic guide and files for Django-related projects
-│   ├── agents.md             ← global onboarding guide (agent-agnostic)
-│   ├── CHANGELOG.md          ← history of changes to the guide
-│   └── projects/
-│       └── template/
-│           └── agents.md     ← per-project template, references the global guide
-└── Generic/                  ← default/standard agent guide, used when no stack-specific guide applies
-    ├── claude.md              ← entry point for Claude, links to agents.md
-    ├── agents.md              ← global onboarding guide (agent-agnostic), links to context.md
-    ├── context.md             ← per-project context template
-    ├── CHANGELOG.md           ← history of changes to the guide
-    └── VERSION                ← current version number, kept in sync with CHANGELOG.md
+├── agents.md                 ← default global onboarding guide (agent-agnostic)
+├── claude.md                 ← entry point for Claude, links to agents.md
+├── context.md                ← per-project context template
+├── bare-repository-git-worktrees-agentic-development.md
+│                              ← multi-agent Git worktree pattern, referenced by agents.md
+├── CHANGELOG.md               ← history of changes to the default guide
+├── VERSION                    ← current version number, kept in sync with CHANGELOG.md
+└── Django Project/            ← stack-specific extension, used for Django projects
+    ├── agents.md               ← Django-specific guide, extends the default agents.md
+    ├── CHANGELOG.md            ← history of changes to the Django-specific guide
+    └── projects/
+        └── template/
+            └── agents.md       ← per-project template, links back to the default guide
 ```
 
 ## Usage
 
-Pick the guide that matches the project: `Generic/` for general-purpose onboarding, `Django Project/` for Django-related projects.
+The root of this repo is the **default guide** — general-purpose, agent-agnostic, and stack-agnostic. Stack-specific folders (e.g. `Django Project/`) extend it with rules for that stack; use one when it matches the project, otherwise use the default guide directly.
 
-### Generic
+### Default
 
-1. Read `Generic/agents.md` before starting any work; it links to `Generic/context.md`.
-2. For a new project, copy `Generic/context.md` into the project root and fill in the project-specific sections.
-3. When the global guide changes, record the change in `Generic/CHANGELOG.md` and bump `Generic/VERSION`.
+1. Read `agents.md` before starting any work; it links to `context.md`.
+2. For a new project, copy `context.md` into the project root and fill in the project-specific sections.
+3. When the default guide changes, record the change in `CHANGELOG.md` and bump `VERSION`.
 
 ### Django Project
 
-1. Read `Django Project/agents.md` before starting any work on a Django project.
-2. For a new project, copy `Django Project/projects/template/agents.md` into the project root and fill in the project-specific sections. It links back to the global guide so project rules layer on top of, rather than replace, the global ones.
-3. When the global guide changes, record the change in `Django Project/CHANGELOG.md`.
+1. Read `Django Project/agents.md` before starting any work on a Django project; it extends the default `agents.md` with Django-specific rules.
+2. For a new project, copy `Django Project/projects/template/agents.md` into the project root and fill in the project-specific sections. It links back to the default guide so project rules layer on top of, rather than replace, the global ones.
+3. When the Django-specific guide changes, record the change in `Django Project/CHANGELOG.md`.
 
 ## Core rules (see each guide for full detail)
 

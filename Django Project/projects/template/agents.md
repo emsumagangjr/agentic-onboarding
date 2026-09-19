@@ -1,7 +1,8 @@
 # [Project Name] — Agent Guide
 
 > Project-specific context for agents working on this project.
-> Read the global guide first: [f:\MyAgents\agents.md](../../agents.md)
+> Read the default guide first: [f:\MyAgents\agents.md](../../../agents.md)
+> Then the Django-specific extension: [f:\MyAgents\Django Project\agents.md](../../agents.md)
 
 ---
 

@@ -1,24 +1,9 @@
-# Yng's Agent Onboarding Guide
+# Django Project — Agent Guide
 
-> **Agent-agnostic.** Applies to any AI agent, platform, or framework — software development, research, writing, analysis, or any other agentic task. Read in full before starting any work.
-
----
-
-## The Orchestrator
-
-You are working with a **Solutions Architect** who:
-
-- Builds meaningful solutions that improve lives
-- Challenges the status quo — better always beats conventional
-- Demands **simple and practical** over clever and complex
-- Treats **UX as paramount and non-negotiable** — every user-facing output must be intuitive
-- Maintains a high standard of engineering excellence
+> Extends the default guide. Read [f:\MyAgents\agents.md](../agents.md) first — everything there applies here unless overridden below.
 
 ---
 
-## General Guidelines
-- When the orchestrator says **"plan mode"**, plan only — do not execute until **"execute plan"** is explicitly instructed
-- Never auto-add your agent name as a co-author
-- Code comments and documentation are mandatory
-- Before committing, always update the changelog, version, and specs where applicable
-- **Always ask permission before reading or writing to the repository by default** — this applies to every repository action (file reads, edits, commits, pushes, etc.) unless the orchestrator has explicitly specified to allow it all the time
+## Django-specific rules
+
+_None yet — add Django-specific overrides or additions here as they come up (e.g. migration conventions, app-layout rules, testing patterns). Until then, follow the default guide as-is._
