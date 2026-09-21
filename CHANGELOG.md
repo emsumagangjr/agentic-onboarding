@@ -4,6 +4,13 @@ All notable changes to this project will be documented here.
 
 ---
 
+## [0.8.1] — 2026-09-22
+
+### Added
+- `epic-workflow.md` — header now credits the compiler ("Compiled by Emeterio M. Sumagang Jr. · yngsoftware"), and records the guide's version (kept in sync with `VERSION`) and its creation date (2026-09-16).
+
+---
+
 ## [0.8.0] — 2026-09-22
 
 ### Added

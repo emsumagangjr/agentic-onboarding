@@ -1,5 +1,8 @@
 # Epic Workflow: Bare Repository + Git Worktrees for Agentic Development
 
+> Compiled by Emeterio M. Sumagang Jr. · yngsoftware (www.yngsoftware.com)  
+> Version 0.8.1 · Created 2026-09-16
+
 ## Purpose
 
 This guide documents a Git workspace and integration pattern for
