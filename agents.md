@@ -36,7 +36,7 @@ This gives each agent an isolated worktree and branch, keeps `main` protected fr
 
 Two gates are people-only: **a person promotes an issue before an agent may start it, and a person merges every merge request.** Agents never merge and never promote. Slice issues are titled for the outcome (not the step), and the spec lives in `docs/specs/<feature>/` on the Epic branch, never in an issue. Keep an Epic under about two weeks.
 
-See [bare-repository-git-worktrees-agentic-development.md](bare-repository-git-worktrees-agentic-development.md) for full setup steps, branching rules, the gates, and agent safety guidelines.
+See [epic-workflow.md](epic-workflow.md) for full setup steps, branching rules, the gates, and agent safety guidelines.
 
 ---
 
@@ -55,7 +55,7 @@ In a bare-repository + worktrees project, private untracked files (`.env`, `secr
 - `-unlink <worktree>` — turn links back into real copies
 - Always preview with `-WhatIf` (`--what-if` in the `.sh`) first; without `-Force` it never overwrites a real file, and `-Force` backs up each file it replaces. `-Force` only ever replaces files: a real folder in the way is left untouched and reported as a warning. Files beneath a folder that is itself a link (an old whole-folder link like `secrets -> ../.shared/secrets`) are skipped with a warning, even with `-Force`, so nothing inside `.shared/` is ever changed through it; remove that folder link by hand (`rm <folder>` without a trailing slash, or `cmd /c rmdir <folder>` on Windows) and re-run
 
-Never edit or delete `.shared/` items casually — a change there affects every worktree that follows the link. See the script's help (`Get-Help .\yngshared.ps1 -Full`, or `./yngshared.sh -h`) and [bare-repository-git-worktrees-agentic-development.md](bare-repository-git-worktrees-agentic-development.md) for details.
+Never edit or delete `.shared/` items casually — a change there affects every worktree that follows the link. See the script's help (`Get-Help .\yngshared.ps1 -Full`, or `./yngshared.sh -h`) and [epic-workflow.md](epic-workflow.md) for details.
 
 ---
 

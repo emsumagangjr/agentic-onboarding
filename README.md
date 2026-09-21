@@ -9,8 +9,7 @@ agentic-onboarding/
 ├── agents.md                 ← default global onboarding guide (agent-agnostic)
 ├── claude.md                 ← entry point for Claude, links to agents.md
 ├── context.md                ← per-project context template
-├── bare-repository-git-worktrees-agentic-development.md
-│                              ← multi-agent Git worktree pattern, referenced by agents.md
+├── epic-workflow.md          ← Epic/slice/gates workflow on a bare-repo + worktree layout, referenced by agents.md
 ├── CHANGELOG.md               ← history of changes to the default guide
 ├── VERSION                    ← current version number, kept in sync with CHANGELOG.md
 ├── yngv.ps1                   ← CLI file viewer "yngv" (markdown in browser, plain text otherwise)

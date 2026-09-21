@@ -4,7 +4,7 @@ All notable changes to this project will be documented here.
 
 ---
 
-## [0.8.0] — 2026-09-21
+## [0.8.0] — 2026-09-22
 
 ### Added
 - `bare-repository-git-worktrees-agentic-development.md` — new sections: *Epics, Slices and Specs* (three objects, `docs/specs/<feature>/` with `requirements.md` and `decisions.md`, two rules for writing an issue, naming table), *The Two Gates* (Gate 1 person promotes, Gate 2 person merges; never-promoted list; provenance check; who moves labels; what `in-review` means; slice completion), *Standalone Fixes (Work With No Epic)*, and *Epic Lifetime and Staying Current* (two-week cap, merge `main` into the Epic, per-branch Epic marker).
@@ -13,6 +13,7 @@ All notable changes to this project will be documented here.
 
 ### Changed
 - `bare-repository-git-worktrees-agentic-development.md` — *task* is now *slice* throughout (branches `slice/…`, worktree directories `slice-…`). Slices reach the Epic branch through a merge request that a person merges; a local `git merge` is only for a person working alone. The Epic goes to `main` as one spec-level review with a drift check against `decisions.md`, backed by the existing technical checks. Sections renumbered.
+- `bare-repository-git-worktrees-agentic-development.md` renamed to `epic-workflow.md` (title: "Epic Workflow: Bare Repository + Git Worktrees for Agentic Development"); links updated in `agents.md` and `README.md`. Earlier changelog entries keep the old name.
 - `agents.md` — framework summary uses slice terminology and states the two people-only gates.
 
 ### Fixed

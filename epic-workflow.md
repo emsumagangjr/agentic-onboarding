@@ -1,4 +1,4 @@
-# Bare Repository + Git Worktrees for Agentic Development
+# Epic Workflow: Bare Repository + Git Worktrees for Agentic Development
 
 ## Purpose
 
