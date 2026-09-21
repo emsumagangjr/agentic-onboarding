@@ -57,8 +57,10 @@ myproject/
 │
 ├── main/                        # protected main worktree
 │   ├── .env -> ../.shared/.env
-│   ├── secrets -> ../.shared/secrets
-│   └── config -> ../.shared/config
+│   ├── secrets/                 # real folder
+│   │   └── api.key -> ../../.shared/secrets/api.key
+│   └── config/                  # real folder
+│       └── app.ini -> ../../.shared/config/app.ini
 │
 ├── epic-auth/                   # Epic integration worktree
 │
@@ -679,25 +681,33 @@ after `git worktree add`.
 
 **On Windows, use `yngshared.ps1`.** Copy [yngshared.ps1](yngshared.ps1)
 into the project root beside `.bare/` and `.shared/`, then run it from
-there. It handles every item in `.shared/` (not just the three above),
-never overwrites real files without `-Force`, and backs up anything it
-replaces:
+there. It handles every file in `.shared/` and its subfolders (not just
+the three above): each file gets its own relative symlink, and the
+matching folders in the worktree are created as real folders. Empty
+folders are ignored. It never overwrites real files without `-Force`,
+backs up each file it replaces, and never replaces a folder (a real
+folder where a file should go is left alone with a warning):
 
 ``` powershell
 .\yngshared.ps1 -link main epic-auth -WhatIf   # preview
-.\yngshared.ps1 -link main epic-auth           # symlink shared items
+.\yngshared.ps1 -link main epic-auth           # symlink shared files
 .\yngshared.ps1 -link -All                     # every worktree
 .\yngshared.ps1 -copy agent-auth-oauth -Name .env   # opt out: own .env
+.\yngshared.ps1 -copy agent-auth-oauth -Name config\app.ini   # nested file
 .\yngshared.ps1 -unlink agent-auth-oauth       # links -> independent copies
 ```
 
-Symlinks on Windows need Developer Mode or an elevated shell. Run
+`-Name` takes files only, as paths relative to `.shared/`; a folder name
+is an error, so name each file in it. Symlinks on Windows need Developer
+Mode or an elevated shell. Run
 `Get-Help .\yngshared.ps1 -Full` for requirements, all switches, and the
 exact behavior for each existing-file case.
 
 **On macOS/Linux, use `yngshared.sh`.** Copy [yngshared.sh](yngshared.sh)
 into the project root, `chmod +x yngshared.sh`, and use the same actions
-with double-dash options (`./yngshared.sh -h` for full help):
+with double-dash options (`./yngshared.sh -h` for full help). It behaves
+the same as the Windows script, including per-file links and
+`--name config/app.ini`:
 
 ``` bash
 ./yngshared.sh --link main epic-auth --what-if   # preview
@@ -712,11 +722,15 @@ loop from `myproject/` is:
 
 ``` bash
 # Run for each new worktree; replace main with its directory name.
-for name in .env secrets config; do
-    if [ -e ".shared/$name" ] && [ ! -e "main/$name" ] &&
-       [ ! -L "main/$name" ]; then
-        ln -s "../.shared/$name" "main/$name"
-    fi
+# Each file in .shared/ (including nested ones) gets its own relative
+# link; folders are created as real folders, never linked as a whole.
+wt=main
+(cd .shared && find . -type f | sed 's|^\./||') | while IFS= read -r rel; do
+    if [ -e "$wt/$rel" ] || [ -L "$wt/$rel" ]; then continue; fi
+    mkdir -p "$wt/$(dirname "$rel")"
+    depth=$(printf '%s' "$wt/$rel" | awk -F/ '{print NF-1}')
+    up=$(printf '../%.0s' $(seq "$depth"))
+    ln -s "${up}.shared/$rel" "$wt/$rel"
 done
 ```
 
@@ -724,6 +738,14 @@ Repeat for `epic-auth` and each task worktree, or put this loop in the
 worktree creation script. Existing files are left alone. If a tracked
 file already occupies one of these paths, keep it tracked and choose a
 different local path for the shared data.
+
+Do not link a whole folder such as `main/secrets -> ../.shared/secrets`.
+Anything the scripts (or you) then write beneath it lands inside
+`.shared/`. If a worktree still has such a folder link from an older
+version, `yngshared` warns and skips every file beneath it, even with
+`-Force`. Remove the folder link (`rm main/secrets` with no trailing
+slash, or `cmd /c rmdir main\secrets` on Windows; never `rm -r` or
+`Remove-Item -Recurse`), then run the script again.
 
 By default, every linked worktree reads the same underlying files. A
 change through one link is visible in all linked worktrees. To opt a
@@ -739,12 +761,11 @@ unlink agent-auth-oauth/.env
 mv agent-auth-oauth/.env.local-copy agent-auth-oauth/.env
 ```
 
-The OAuth task now has independent `.env` values; its `secrets/` and
-`config/` links still follow `.shared/`. The same approach works for a
-directory: copy its contents into a temporary directory in that
-worktree, unlink the directory link, then rename the temporary directory
-to the original name. To opt out when creating a worktree, simply omit
-the selected link and create a local file or directory at that path.
+The OAuth task now has independent `.env` values; the file links in its
+`secrets/` and `config/` folders still follow `.shared/`. The same
+approach works for a nested file, one file at a time. To opt out when
+creating a worktree, simply omit the selected link and create a local
+file at that path.
 Only unlink a path after confirming it is a symbolic link; deleting or
 editing the shared target affects every branch that follows it.
 

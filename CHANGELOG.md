@@ -4,6 +4,18 @@ All notable changes to this project will be documented here.
 
 ---
 
+## [0.7.0] — 2026-09-21
+
+### Changed
+- `yngshared.ps1` — every existing file inside `.shared\`, including subfolders, is now linked or copied individually with a relative symlink (`..\..\.shared\config\app.ini`); matching folders in the worktree are created as real folders and empty folders are ignored. `-Name` takes file paths relative to `.shared\` (forward slashes accepted) and rejects folder names. Help text updated, including a nested-file example. The author/version header and requirements/install sections were removed from the help in this change.
+- `yngshared.sh` — same per-file behavior as `yngshared.ps1` (nested files linked individually, real folders created, empty folders ignored, `--name` takes file paths and rejects folder names). Script version bumped to 1.1.0; help text updated.
+- `yngshared.ps1`, `yngshared.sh` — `-Force` / `--force` now only replaces files. A real folder where a file should go is never backed up, moved or replaced; it is reported as a warning (counted as a problem) with or without force. Folder comparison code removed.
+- `yngshared.ps1`, `yngshared.sh` — guard against old whole-folder links: if a folder between the worktree and a file is itself a link, every action (including force) warns and skips the file, so nothing inside `.shared/` can be changed or renamed through it. The help explains how to remove such a link safely.
+- `bare-repository-git-worktrees-agentic-development.md` — manual loop now links files individually (no whole-folder links) and warns against folder links.
+- `agents.md`, `bare-repository-git-worktrees-agentic-development.md` — describe the per-file behavior, the files-only force rule, the linked-folder guard and the `-Name` / `--name` rule; the worktree tree now shows real folders holding file symlinks.
+
+---
+
 ## [0.6.0] — 2026-09-19
 
 ### Changed

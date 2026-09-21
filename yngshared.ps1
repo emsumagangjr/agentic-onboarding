@@ -3,37 +3,18 @@
     Shares private files from .shared\ with git worktrees: -link, -copy or -unlink.
 
 .DESCRIPTION
-    Author:  Emeterio M. Sumagang Jr.
-    Company: yngsoftware (www.yngsoftware.com)
+    This project uses a bare repository with one folder per worktree:
 
-    Works with any project laid out as a bare repository with one folder per
-    worktree (the "Bare Repository + Git Worktrees" pattern):
-
-        <project-root>\
+        myinfoqr_website\
         |-- .bare\          shared git database
         |-- .shared\        private, untracked files (.env, secrets\, ...)
         |-- main\           worktree
-        |-- <other>\        more worktrees (epic, task, agent, ...)
-        `-- yngshared.ps1   <- this script (must sit at the project root)
+        |-- dev\            worktree
+        `-- yngshared.ps1   <- this script
 
-    REQUIREMENTS
-    - Windows PowerShell 5.1 or PowerShell 7+, on Windows (uses cmd's mklink
-      and fsutil).
-    - Git on PATH (only needed for -All).
-    - A project root containing .bare\ and .shared\ as shown above.
-    - For -link: Developer Mode or an elevated shell (see SYMBOLIC LINKS).
-
-    INSTALL
-    Copy this file into the project root, beside .bare\ and .shared\. The
-    script treats its own folder as the project root, so it cannot be run from
-    anywhere else. Nothing else needs installing.
-
-    HOW TO RUN
-    From the project root (or via its full path), pick one action and the
-    worktree(s) to apply it to, for example:  .\yngshared.ps1 -link main
-    See the EXAMPLES section below. Preview any run first with -WhatIf.
-
-    Every file or folder directly inside .shared\ is an "item". Choose exactly
+    Every existing file inside .shared\, including subfolders, is an "item".
+    Matching destination folders are created as real folders; only files are
+    linked. Empty folders are ignored. Choose exactly
     one action, and the worktree(s) to apply it to:
 
         -link     Put a symbolic link to each item in the worktree. The worktree
@@ -61,8 +42,11 @@
                                    linked); a hard    copy                copy
                                    link or junction
                                    becomes a symlink
-      real file or folder          keep               keep                keep
+      real file                    keep               keep                keep
         ...with -Force             back up, symlink   back up, copy       keep (no effect)
+      real folder (where a         warn and skip      warn and skip       keep
+      file should go)
+        ...with -Force             warn and skip      warn and skip       keep (no effect)
       link somewhere else, or      warn and skip      warn and skip       warn and skip
       broken link
         ...with -Force             replace with a     replace with a      warn and skip
@@ -72,8 +56,21 @@
     survives and re-running is always safe. A worktree opts out of sharing simply
     by having its own real file at that path.
 
+    -Force only ever replaces files. A real folder sitting where a file should go
+    is never backed up, moved or replaced, with or without -Force; it is reported
+    as a warning and you sort it out by hand.
+
+    LINKED FOLDERS
+    If a folder between the worktree and the file is itself a link (older
+    versions of this script linked whole folders, e.g. secrets -> ..\.shared\secrets),
+    anything done beneath it would land in the link's target, possibly inside
+    .shared\. So every action, -Force included, warns and skips files beneath a
+    linked folder. Remove that folder link yourself with 'cmd /c rmdir dev\secrets'
+    (removes only the link, never what it points to; avoid Remove-Item -Recurse
+    on it), then run the script again to create per-file links.
+
     -FORCE AND BACKUPS
-    With -Force, a real file or folder that differs from the shared item is
+    With -Force, a real file that differs from the shared item is
     first renamed inside the same worktree to
         <name>.yngshared-bak-<yyyyMMdd-HHmmss>
     for example .env.yngshared-bak-20260919-153000. The first time a backup is
@@ -85,8 +82,10 @@
     The script never deletes backups; delete them yourself when you are happy.
 
     SYMBOLIC LINKS
-    Links are relative (for example ..\.shared\.env), so they keep working if the
-    project folder is moved or renamed. Creating symlinks on Windows needs
+    Each link points at one file, never at a folder, and is relative to its own
+    location: ..\.shared\.env for dev\.env, ..\..\.shared\config\app.ini for
+    dev\config\app.ini. They keep working if the project folder is moved or
+    renamed. Creating symlinks on Windows needs
     Developer Mode (Settings > System > Advanced > For developers) or an
     elevated (administrator) shell. If they are not permitted, -link stops with
     an error and changes nothing. -copy and -unlink do not need symlinks.
@@ -127,12 +126,17 @@
     is skipped). Use this or worktree names, not both.
 
 .PARAMETER Name
-    Limit the run to these items from .shared\, for example -Name .env,secrets.
-    Default: every item in .shared\. A name that is not in .shared\ is an error.
+    Limit the run to these files from .shared\, for example -Name .env,db.sqlite3.
+    Use paths relative to .shared\ for nested files, such as
+    -Name config\config.ini (forward slashes work too). Default: every existing
+    file inside .shared\ and its subfolders. A name is always a single file:
+    a folder name (such as -Name secrets), or a file that does not exist, is an
+    error. To limit the run to a folder, name each file in it.
 
 .PARAMETER Force
-    With -link or -copy: also replace a real file or folder (after a backup, see
-    above) and a link that points somewhere else. Has no effect with -unlink.
+    With -link or -copy: also replace a real file (after a backup, see above)
+    and a link that points somewhere else. Never replaces a folder. Has no
+    effect with -unlink.
 
 .PARAMETER WhatIf
     Show what would happen ("would symlink ...") without changing anything.
@@ -141,7 +145,7 @@
 .EXAMPLE
     .\yngshared.ps1 -link dev
 
-    Link everything in .shared\ into dev\.
+    Link every existing file inside .shared\ into dev\, preserving subfolders.
 
 .EXAMPLE
     .\yngshared.ps1 -link -All -WhatIf
@@ -151,8 +155,13 @@
 .EXAMPLE
     .\yngshared.ps1 -copy agent-x -Name .env
 
-    Give the agent-x worktree its own copy of .env only (opt out of sharing
-    for that item).
+    Give the agent-x worktree its own copy of .env only.
+
+.EXAMPLE
+    .\yngshared.ps1 -copy dev -Name config\config.ini
+
+    Give dev its own copy of the nested file config\config.ini; the rest of
+    dev's links are untouched.
 
 .EXAMPLE
     .\yngshared.ps1 -unlink dev
@@ -165,18 +174,12 @@
     Link two worktrees, replacing any real .env already there (backed up first).
 
 .NOTES
-    Name:         yngshared
-    Version:      1.0.0
-    Created:      2026-09-19
-    Author:       Emeterio M. Sumagang Jr.
-    Company:      yngsoftware (www.yngsoftware.com)
-
     Works in Windows PowerShell 5.1 and PowerShell 7.
 
     Output, one line per item ("would ..." instead when -WhatIf is used):
         symlink   created a relative symbolic link
         copy      created a real copy
-        backup    renamed an existing real file or folder (-Force)
+        backup    renamed an existing real file (-Force)
         keep      left alone (see the note after it)
         skip      nothing to do
         warn      refused; counts as a problem
@@ -233,7 +236,7 @@ function Report([string]$Status, [string]$Path, [string]$Note = '') {
 #   none    nothing there
 #   shared  a symlink/junction/hard link that points at this shared item
 #   other   a symlink/junction pointing elsewhere, or broken
-#   real    an ordinary file or folder
+#   real    an ordinary file or folder (IsDir tells which; folders are never replaced)
 function Get-State([string]$Path, $Item) {
     $e = Get-Item -LiteralPath $Path -Force -ErrorAction SilentlyContinue
     if (-not $e) { return @{ Kind = 'none' } }
@@ -263,27 +266,9 @@ function Get-State([string]$Path, $Item) {
     return @{ Kind = 'real'; IsDir = $isDir }
 }
 
-function Get-HashMap([string]$Dir) {
-    $map = @{}
-    Get-ChildItem -LiteralPath $Dir -Recurse -Force -File | ForEach-Object {
-        $map[$_.FullName.Substring($Dir.Length)] = (Get-FileHash -LiteralPath $_.FullName).Hash
-    }
-    $map
-}
-
-# True when the existing path holds exactly the same content as the shared item.
+# True when the existing file holds exactly the same content as the shared file.
 function Test-SameContent([string]$Path, [string]$SharedPath) {
-    $aDir = Test-Path -LiteralPath $Path -PathType Container
-    $bDir = Test-Path -LiteralPath $SharedPath -PathType Container
-    if ($aDir -ne $bDir) { return $false }
-    if (-not $aDir) {
-        return (Get-FileHash -LiteralPath $Path).Hash -eq (Get-FileHash -LiteralPath $SharedPath).Hash
-    }
-    $a = Get-HashMap $Path
-    $b = Get-HashMap $SharedPath
-    if ($a.Count -ne $b.Count) { return $false }
-    foreach ($k in $a.Keys) { if ($a[$k] -ne $b[$k]) { return $false } }
-    return $true
+    (Get-FileHash -LiteralPath $Path).Hash -eq (Get-FileHash -LiteralPath $SharedPath).Hash
 }
 
 # Delete a link (or hard link name) without touching what it points to.
@@ -292,14 +277,17 @@ function Remove-LinkEntry([string]$Path, [bool]$IsDir) {
 }
 
 function New-SharedSymlink([string]$Dest, $Item, [string]$Label) {
-    # One "..\" per folder level between the project root and the worktree.
-    $up     = '..\' * (($Label -split '\\').Count)
-    $target = "$up.shared\$($Item.Name)"
+    if (-not (Test-Path -LiteralPath $Item.FullName -PathType Leaf)) {
+        throw "Shared source is not an existing file: $($Item.FullName)"
+    }
+    # Climb from the destination file's parent back to the project root.
+    $levels = ($Label -split '\\').Count + ($Item.RelativePath -split '\\').Count - 1
+    $up     = '..\' * $levels
+    $target = "$up.shared\$($Item.RelativePath)"
     # cmd's mklink stores the target text exactly as written, so the link is
     # relative to its own folder. New-Item -Target would instead resolve a
     # relative path against the current directory and fail.
-    $flag = if ($Item.PSIsContainer) { '/D' } else { '' }
-    $out  = cmd /c mklink $flag "`"$Dest`"" "`"$target`"" 2>&1
+    $out  = cmd /c mklink "`"$Dest`"" "`"$target`"" 2>&1
     if ($LASTEXITCODE -ne 0) { throw "mklink failed: $out" }
 }
 
@@ -358,12 +346,36 @@ function Resolve-Worktree([string]$Arg) {
 
 # Put the shared item at $Dest as a symlink (-link) or a real copy (-copy).
 function Install-SharedItem([string]$Dest, $Item, [string]$Label, [string]$What) {
+    $parent = Split-Path -Parent $Dest
+    if (-not (Test-Path -LiteralPath $parent -PathType Container)) {
+        New-Item -ItemType Directory -Path $parent -ErrorAction Stop | Out-Null
+    }
     if ($What -eq 'link') { New-SharedSymlink $Dest $Item $Label }
     else { Copy-Item -LiteralPath $Item.FullName -Destination $Dest -Recurse }
 }
 
-function Invoke-ItemAction([string]$Action, [string]$Dest, $Item, [string]$Label) {
-    $rel   = "$Label\$($Item.Name)"
+# The first folder between the worktree root and $Dest that is a link, or $null.
+# Anything done through such a folder would land wherever the link points
+# (older versions of this script linked whole folders such as secrets\ into
+# .shared\), so the script must not touch paths beneath it.
+function Find-LinkedParent([string]$Dest, [string]$WtPath) {
+    $p = Split-Path -Parent $Dest
+    while ($p.Length -gt $WtPath.Length) {
+        $e = Get-Item -LiteralPath $p -Force -ErrorAction SilentlyContinue
+        if ($e -and $e.LinkType) { return $p }
+        $p = Split-Path -Parent $p
+    }
+    $null
+}
+
+function Invoke-ItemAction([string]$Action, [string]$Dest, $Item, [string]$Label, [string]$WtPath) {
+    $rel   = "$Label\$($Item.RelativePath)"
+    $linked = Find-LinkedParent $Dest $WtPath
+    if ($linked) {
+        Report 'warn' $rel "parent folder $($linked.Substring($WtPath.Length + 1)) is a link (older version?); replace it with a real folder first"
+        $script:problems++
+        return
+    }
     $st    = Get-State $Dest $Item
     $place = if ($Action -eq 'link') { 'symlink' } else { 'copy' }
 
@@ -389,7 +401,13 @@ function Invoke-ItemAction([string]$Action, [string]$Dest, $Item, [string]$Label
         }
         'real' {
             if ($Action -eq 'unlink') { Report 'keep' $rel 'not a link'; return }
-            if (-not $Force) { Report 'keep' $rel 'real file or folder; -Force replaces it'; return }
+            if ($st.IsDir) {
+                # -Force only replaces files; never move or delete a folder.
+                Report 'warn' $rel 'a folder is in the way; only files are replaced'
+                $script:problems++
+                return
+            }
+            if (-not $Force) { Report 'keep' $rel 'real file; -Force replaces it'; return }
             $same = Test-SameContent $Dest $Item.FullName
             if ($same -and $Action -eq 'copy') { Report 'keep' $rel 'already an identical copy'; return }
             $bak = $null
@@ -399,7 +417,7 @@ function Invoke-ItemAction([string]$Action, [string]$Dest, $Item, [string]$Label
             }
             elseif (-not $WhatIf) {
                 # Identical to the shared item: nothing to lose, drop it.
-                if ($st.IsDir) { [IO.Directory]::Delete($Dest, $true) } else { [IO.File]::Delete($Dest) }
+                [IO.File]::Delete($Dest)
             }
             if (-not $WhatIf) {
                 try { Install-SharedItem $Dest $Item $Label $Action }
@@ -452,26 +470,31 @@ if (-not (Test-Path -LiteralPath $shared -PathType Container)) {
     exit 1
 }
 
-$items = @(Get-ChildItem -LiteralPath $shared -Force)
+$items = @(Get-ChildItem -LiteralPath $shared -Force -File -Recurse |
+    Where-Object { Test-Path -LiteralPath $_.FullName -PathType Leaf } |
+    ForEach-Object {
+        $_ | Add-Member -NotePropertyName RelativePath -NotePropertyValue $_.FullName.Substring($shared.Length + 1) -PassThru
+    })
 if ($Name) {
-    $missing = @($Name | Where-Object { $n = $_; -not ($items | Where-Object { $_.Name -ieq $n }) })
+    $Name = @($Name | ForEach-Object { $_ -replace '/', '\' })
+    $missing = @($Name | Where-Object { $n = $_; -not ($items | Where-Object { $_.RelativePath -ieq $n }) })
     if ($missing.Count) {
-        Write-Host "ERROR: not in .shared\: $($missing -join ', ')" -ForegroundColor Red
+        Write-Host "ERROR: not an existing file inside .shared\: $($missing -join ', ')" -ForegroundColor Red
         exit 1
     }
-    $items = @($items | Where-Object { $Name -contains $_.Name })
+    $items = @($items | Where-Object { $Name -contains $_.RelativePath })
 }
-if (-not $items.Count) { Write-Host 'Nothing to do: .shared\ is empty.'; exit 0 }
+if (-not $items.Count) { Write-Host 'Nothing to do: .shared\ contains no existing files.'; exit 0 }
 
 if ($action -eq 'link') {
     # Fail before changing anything if symlinks are not allowed on this machine.
     $probe = Join-Path $env:TEMP ('yngshared-probe-' + [guid]::NewGuid().ToString('N'))
-    cmd /c mklink /D "`"$probe`"" "`"$shared`"" 2>&1 | Out-Null
+    cmd /c mklink "`"$probe`"" "`"$($items[0].FullName)`"" 2>&1 | Out-Null
     if ($LASTEXITCODE -ne 0) {
         Write-Host 'ERROR: cannot create symbolic links. Turn on Developer Mode (Settings > System > Advanced > For developers) or run as administrator. Nothing was changed.' -ForegroundColor Red
         exit 1
     }
-    [IO.Directory]::Delete($probe)
+    [IO.File]::Delete($probe)
 }
 
 # --------------------------------------------------------------------------
@@ -499,9 +522,9 @@ foreach ($arg in $targets) {
     }
 
     foreach ($item in $items) {
-        try { Invoke-ItemAction $action (Join-Path $wt.Path $item.Name) $item $wt.Label }
+        try { Invoke-ItemAction $action (Join-Path $wt.Path $item.RelativePath) $item $wt.Label $wt.Path }
         catch {
-            Report 'error' "$($wt.Label)\$($item.Name)" $_.Exception.Message
+            Report 'error' "$($wt.Label)\$($item.RelativePath)" $_.Exception.Message
             $problems++
         }
     }

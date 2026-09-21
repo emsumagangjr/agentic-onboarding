@@ -46,12 +46,12 @@ Use the `yngv` command to view files from the CLI instead of dumping raw text: [
 
 ## Shared Private Files (Worktrees)
 
-In a bare-repository + worktrees project, private untracked files (`.env`, `secrets/`, `config/`, …) live once in a root `.shared/` folder and are linked into each worktree — never committed, never copied by hand. Use [yngshared.ps1](yngshared.ps1) on Windows or [yngshared.sh](yngshared.sh) on macOS/Linux, placed in the project root beside `.bare/` and `.shared/` (the `.sh` version takes the same actions as `--link`, `--copy`, `--unlink`, `--all`, `--name`, `--force`, `--what-if`):
+In a bare-repository + worktrees project, private untracked files (`.env`, `secrets/`, `config/`, …) live once in a root `.shared/` folder and are linked into each worktree — never committed, never copied by hand. Every file inside `.shared/`, including nested ones (`config/app.ini`), is linked individually; the matching folders are created as real folders in the worktree. Use [yngshared.ps1](yngshared.ps1) on Windows or [yngshared.sh](yngshared.sh) on macOS/Linux, placed in the project root beside `.bare/` and `.shared/` (the `.sh` version takes the same actions as `--link`, `--copy`, `--unlink`, `--all`, `--name`, `--force`, `--what-if`):
 
-- `-link <worktree>…` or `-link -All` — symlink shared items into worktrees
-- `-copy <worktree> -Name <item>` — give a worktree its own independent copy (opt out of sharing)
+- `-link <worktree>…` or `-link -All` — symlink shared files into worktrees
+- `-copy <worktree> -Name <file>` — give a worktree its own independent copy (opt out of sharing); `-Name` takes files only, relative to `.shared/` (`config\app.ini`), never a folder
 - `-unlink <worktree>` — turn links back into real copies
-- Always preview with `-WhatIf` (`--what-if` in the `.sh`) first; without `-Force` it never overwrites a real file, and `-Force` backs up whatever it replaces
+- Always preview with `-WhatIf` (`--what-if` in the `.sh`) first; without `-Force` it never overwrites a real file, and `-Force` backs up each file it replaces. `-Force` only ever replaces files: a real folder in the way is left untouched and reported as a warning. Files beneath a folder that is itself a link (an old whole-folder link like `secrets -> ../.shared/secrets`) are skipped with a warning, even with `-Force`, so nothing inside `.shared/` is ever changed through it; remove that folder link by hand (`rm <folder>` without a trailing slash, or `cmd /c rmdir <folder>` on Windows) and re-run
 
 Never edit or delete `.shared/` items casually — a change there affects every worktree that follows the link. See the script's help (`Get-Help .\yngshared.ps1 -Full`, or `./yngshared.sh -h`) and [bare-repository-git-worktrees-agentic-development.md](bare-repository-git-worktrees-agentic-development.md) for details.
 
