@@ -3,14 +3,35 @@
     Shares private files from .shared\ with git worktrees: -link, -copy or -unlink.
 
 .DESCRIPTION
-    This project uses a bare repository with one folder per worktree:
+    Author:  Emeterio M. Sumagang Jr.
+    Company: yngsoftware (www.yngsoftware.com)
 
-        myinfoqr_website\
+    Works with any project laid out as a bare repository with one folder per
+    worktree (the "Bare Repository + Git Worktrees" pattern):
+
+        <project-root>\
         |-- .bare\          shared git database
         |-- .shared\        private, untracked files (.env, secrets\, ...)
         |-- main\           worktree
-        |-- dev\            worktree
-        `-- yngshared.ps1   <- this script
+        |-- <other>\        more worktrees (epic, task, agent, ...)
+        `-- yngshared.ps1   <- this script (must sit at the project root)
+
+    REQUIREMENTS
+    - Windows PowerShell 5.1 or PowerShell 7+, on Windows (uses cmd's mklink
+      and fsutil).
+    - Git on PATH (only needed for -All).
+    - A project root containing .bare\ and .shared\ as shown above.
+    - For -link: Developer Mode or an elevated shell (see SYMBOLIC LINKS).
+
+    INSTALL
+    Copy this file into the project root, beside .bare\ and .shared\. The
+    script treats its own folder as the project root, so it cannot be run from
+    anywhere else. Nothing else needs installing.
+
+    HOW TO RUN
+    From the project root (or via its full path), pick one action and the
+    worktree(s) to apply it to, for example:  .\yngshared.ps1 -link main
+    See the EXAMPLES section below. Preview any run first with -WhatIf.
 
     Every existing file inside .shared\, including subfolders, is an "item".
     Matching destination folders are created as real folders; only files are
@@ -155,7 +176,8 @@
 .EXAMPLE
     .\yngshared.ps1 -copy agent-x -Name .env
 
-    Give the agent-x worktree its own copy of .env only.
+    Give the agent-x worktree its own copy of .env only (opt out of sharing
+    for that file).
 
 .EXAMPLE
     .\yngshared.ps1 -copy dev -Name config\config.ini
@@ -174,6 +196,12 @@
     Link two worktrees, replacing any real .env already there (backed up first).
 
 .NOTES
+    Name:         yngshared
+    Version:      1.1.0
+    Created:      2026-09-19
+    Author:       Emeterio M. Sumagang Jr.
+    Company:      yngsoftware (www.yngsoftware.com)
+
     Works in Windows PowerShell 5.1 and PowerShell 7.
 
     Output, one line per item ("would ..." instead when -WhatIf is used):
