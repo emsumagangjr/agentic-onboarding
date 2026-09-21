@@ -4,10 +4,26 @@ All notable changes to this project will be documented here.
 
 ---
 
+## [0.8.0] — 2026-09-21
+
+### Added
+- `bare-repository-git-worktrees-agentic-development.md` — new sections: *Epics, Slices and Specs* (three objects, `docs/specs/<feature>/` with `requirements.md` and `decisions.md`, two rules for writing an issue, naming table), *The Two Gates* (Gate 1 person promotes, Gate 2 person merges; never-promoted list; provenance check; who moves labels; what `in-review` means; slice completion), *Standalone Fixes (Work With No Epic)*, and *Epic Lifetime and Staying Current* (two-week cap, merge `main` into the Epic, per-branch Epic marker).
+- The agent slice workflow now describes the implement → code-review chain and how review findings are triaged (fix, decide, new issue, note). Added a note on where "just rebuild it" stops being cheap (expand, migrate, contract) to the environment isolation section.
+- Five new agent safety rules: start only promoted work, never merge or change issue state, self-review before the MR, keep the spec current, change `.bare/` only through Git commands.
+
+### Changed
+- `bare-repository-git-worktrees-agentic-development.md` — *task* is now *slice* throughout (branches `slice/…`, worktree directories `slice-…`). Slices reach the Epic branch through a merge request that a person merges; a local `git merge` is only for a person working alone. The Epic goes to `main` as one spec-level review with a drift check against `decisions.md`, backed by the existing technical checks. Sections renumbered.
+- `agents.md` — framework summary uses slice terminology and states the two people-only gates.
+
+### Fixed
+- Guidance for recording the Epic per worktree: `git config --local` writes to the shared `.bare/config` (every worktree reads the same value), and `extensions.worktreeConfig` breaks work-tree commands in a bare-repository layout. The guide now uses a branch-scoped key, `branch.<name>.epicid`, and explains why.
+
+---
+
 ## [0.7.0] — 2026-09-21
 
 ### Changed
-- `yngshared.ps1` — every existing file inside `.shared\`, including subfolders, is now linked or copied individually with a relative symlink (`..\..\.shared\config\app.ini`); matching folders in the worktree are created as real folders and empty folders are ignored. `-Name` takes file paths relative to `.shared\` (forward slashes accepted) and rejects folder names. Help text updated, including a nested-file example. The author/version header and requirements/install sections were removed from the help in this change.
+- `yngshared.ps1` — every existing file inside `.shared\`, including subfolders, is now linked or copied individually with a relative symlink (`..\..\.shared\config\app.ini`); matching folders in the worktree are created as real folders and empty folders are ignored. `-Name` takes file paths relative to `.shared\` (forward slashes accepted) and rejects folder names. Help text updated, including a nested-file example. Script version bumped to 1.1.0.
 - `yngshared.sh` — same per-file behavior as `yngshared.ps1` (nested files linked individually, real folders created, empty folders ignored, `--name` takes file paths and rejects folder names). Script version bumped to 1.1.0; help text updated.
 - `yngshared.ps1`, `yngshared.sh` — `-Force` / `--force` now only replaces files. A real folder where a file should go is never backed up, moved or replaced; it is reported as a warning (counted as a problem) with or without force. Folder comparison code removed.
 - `yngshared.ps1`, `yngshared.sh` — guard against old whole-folder links: if a folder between the worktree and a file is itself a link, every action (including force) warns and skips the file, so nothing inside `.shared/` can be changed or renamed through it. The help explains how to remove such a link safely.

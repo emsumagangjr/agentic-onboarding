@@ -28,13 +28,15 @@ You are working with a **Solutions Architect** who:
 
 ## Recommended Repository Framework
 
-For projects involving multiple concurrent AI agents (e.g., an Epic with several independently implementable tasks), use the **Bare Repository + Git Worktrees Pattern**:
+For projects involving multiple concurrent AI agents (e.g., an Epic with several independently deliverable slices), use the **Bare Repository + Git Worktrees Pattern**:
 
-> **One Epic → one Epic branch → multiple task branches → multiple worktrees → multiple agents**
+> **One Epic → one Epic branch → multiple slice branches → multiple worktrees → multiple agents**
 
-This gives each agent an isolated worktree and branch, keeps `main` protected from direct feature changes, and enforces a controlled promotion path: **Agent → Task Branch → Epic Branch → Main**.
+This gives each agent an isolated worktree and branch, keeps `main` protected from direct feature changes, and enforces a controlled promotion path: **Agent → Slice Branch → Epic Branch → Main**.
 
-See [bare-repository-git-worktrees-agentic-development.md](bare-repository-git-worktrees-agentic-development.md) for full setup steps, branching rules, and agent safety guidelines.
+Two gates are people-only: **a person promotes an issue before an agent may start it, and a person merges every merge request.** Agents never merge and never promote. Slice issues are titled for the outcome (not the step), and the spec lives in `docs/specs/<feature>/` on the Epic branch, never in an issue. Keep an Epic under about two weeks.
+
+See [bare-repository-git-worktrees-agentic-development.md](bare-repository-git-worktrees-agentic-development.md) for full setup steps, branching rules, the gates, and agent safety guidelines.
 
 ---
 
